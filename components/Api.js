@@ -4,14 +4,11 @@ import { Alert } from 'react-native';
 export const fetchCripto = async (setRegistros) => {
   try {
     const response = await fetch(API_URL);
-    if (!response.ok) {
-      throw new Error('Erro ao buscar Criptos');
-    }
-    const data = await response.json();
-    setRegistros(data);
+    const result = await response.json();
+    return result.data;
   } catch (error) {
-    console.error('Erro ao buscar Criptos:', error);
-    throw error;
+    console.error('Erro ao buscar Criptosrrr:', error);
+    return [];
   }
 };
  
@@ -69,7 +66,7 @@ const response = await fetch(`https://criptos.webapptech.cloud/api/cripto/${Crip
         Alert.alert('Sucesso!', responseData.message);
         
         setRegistros((prevRegistros) => {
-          const novaLista = prevRegistros.filter((Cripto) => Cripto.codigo !== CriptoId);
+          const novaLista = prevRegistros.filter((Cripto) => Cripto.id !== CriptoId);
           console.log('Nova lista de Criptos:', novaLista);
           return novaLista;
         });
@@ -95,9 +92,9 @@ const response = await fetch(`https://criptos.webapptech.cloud/api/cripto/${Crip
   }
 };
  
-export const updateCripto = async (CriptoId, updatedData, navigation) => {
+export const updateCripto = async (cripto, updatedData, navigation) => {
   try {
-const response = await fetch(`https://criptos.webapptech.cloud/api/cripto/${CriptoId}`, {
+const response = await fetch(`https://criptos.webapptech.cloud/api/cripto/${cripto.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -111,7 +108,6 @@ const response = await fetch(`https://criptos.webapptech.cloud/api/cripto/${Crip
       Alert.alert('Sucesso!', 'Cripto atualizado com sucesso!');
       navigation.navigate('Home'); 
     } else {
-      const textResponse = await response.text();
       let responseData;
       try {
         responseData = JSON.parse(textResponse);

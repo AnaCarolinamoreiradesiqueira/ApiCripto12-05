@@ -8,7 +8,13 @@ export default function Home({navigation}) {
     const [registro, setRegistros] = useState([]);
 
     useEffect(() => {
-        fetchCripto(setRegistros);
+        async function carregarDados() {
+            const data = await fetchCripto();
+            console.log('Dados recebidos:', data);
+            setRegistros(data);
+        } 
+
+        carregarDados();
     }, []);
 
     const handleDelete = (id) => {
@@ -31,16 +37,16 @@ export default function Home({navigation}) {
         <View style={styles.container}>
         <FlatList
         data={registro}
-        keyExtractor={(item) => item.codigo.toString()}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={({item})=>(
           <View style={styles.itemContainer}>  
           <Text style={styles.itemText}>
-            Cripto: {item.sigla} - Sigla: {item.nome}
+            Cripto: {item.nomeCripto} - Sigla: {item.siglaCripto}
         </Text>
         <View style={styles.buttonRow}>
          <TouchableOpacity
          style={[styles.button, styles.deleteButton]}
-         onPress={()=> handleDelete(item.codigo)}
+         onPress={()=> handleDelete(item.id)}
          >
         
          <Icon name="trash" size={20} color="#fff" />
@@ -49,7 +55,7 @@ export default function Home({navigation}) {
         
         <TouchableOpacity
         style={[styles.button, styles.editButton]}
-        onPress={() => navigation.navigate('Alterar', { book: item })} 
+        onPress={() => navigation.navigate('Alterar', { cripto: item })} 
         >
         <Icon name="edit" size={20} color="#fff" />
         
